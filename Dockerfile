@@ -15,7 +15,7 @@ RUN go mod tiny \
     go mod download
 
 # Build to binrary
-RUN go build -ldflags="-s -w" -o main .
+RUN go build -a -ldflags "-s -w" -v -o main .
 
 # Optimize docker image after build
 FROM alpine:3.10

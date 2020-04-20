@@ -34,4 +34,4 @@ jobs:
         fi
 
     - name: Build
-      run: go build -ldflags="-s -w" -v .
+      run: go build -a -ldflags "-s -w" -v -o main .
