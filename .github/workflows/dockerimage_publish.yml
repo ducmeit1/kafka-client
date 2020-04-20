@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Login Docker Hub
-      run: echo ${{ DOCKER_PASSWORD}} | docker login -u ${{ DOCKER_USERNAME }} --password-stdin
+      run: echo ${{ DOCKER_PASSWORD }} | docker login -u ${{ DOCKER_USERNAME }} --password-stdin
     - name: Build Docker Image
       run: docker build . --file Dockerfile --tag ducmeit1/kafka-client:latest --build-arg BIN=cmd/producer
     - name: Push Docker Image
