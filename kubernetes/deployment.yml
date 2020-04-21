@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: kafka
+  name: kafka-client-config
+  labels:
+    app: kafka-client
+data:
+  config.toml: |
+    [kafka]
+    servers=["localhost:9093"]
+    tls=false
+    tls_client_cert="/usr/certs/client_cert.crt"
+    tls_client_key="/usr/certs/client_key.key"
+    tls_client_ca=""
+    tls_skip_verify=true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: kafka
+  name: kafka-client-secret
+  labels:
+    app: kafka-client
+data:
+  client_cert.crt: ""
+  client_key.key: "="
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  kafka-client
+  namespace: kafka
+  labels:
+    app:  kafka-client
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+
+  selector:
+    matchLabels:
+      app: kafka-client
+
+  template:
+    metadata:
+      labels:
+        app: kafka-client
+    spec:
+      securityContext:
+        fsGroup: 1000
+
+      volumes:
+        - name: kafka-client-config
+          configMap:
+              name: kafka-client-config
+        - name: kafka-client-secret
+          secret:
+              secretName: kafka-client-secret
+      
+      containers:
+      - image:  ducmeit1/kafka-client:latest
+        imagePullPolicy: Always
+        name:  kafka-client
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          runAsUser: 1000
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "100M"
+          limits:
+            cpu: "500m"
+            memory: "1G"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8888
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8888
+          initialDelaySeconds: 30
+          timeoutSeconds: 10  
+        ports:
+        - containerPort:  8888
+          name: http
+        volumeMounts:
+          - name:  kafka-client-config
+            mountPath: /app/config.toml
+            subPath: config.toml
+            readOnly: true
+          - name: kafka-client-secret
+            mountPath: /usr/certs/client_cert.crt
+            subPath: client_cert.crt
+            readOnly: true
+          - name: kafka-client-secret
+            mountPath: /usr/certs/client_key.key
+            subPath: client_key.key
+            readOnly: true
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name:  kafka-client
+  namespace: kafka
+  labels:
+    app: kafka-client
+spec:
+  selector:
+    app:  kafka-client
+  type:  ClusterIP
+  ports:
+  - name: http
+    port:  8888
+    targetPort:  8888
+    protocol: TCP
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: kafka-client
+  namespace: kafka
+  labels:
+    app: kafka-client
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: example.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: kafka-client
+              servicePort: 8888

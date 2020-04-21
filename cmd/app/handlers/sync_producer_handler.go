@@ -2,8 +2,9 @@ package handlers
 
 import (
 	"github.com/Shopify/sarama"
-	"github.com/ducmeit1/kafka-client/cmd/producer/app/parsers"
+	"github.com/ducmeit1/kafka-client/cmd/app/parsers"
 	"github.com/ducmeit1/kafka-client/common/transports"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -33,6 +34,8 @@ func (p *SyncProducerHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		})
 		return
 	}
+
+	log.Infof("Sent 1 message to topic: %v with offset: %v, partition: %v", pr.Topic, offset, partition)
 
 	transports.OK(w, map[string]interface{}{
 		"Partition": partition,

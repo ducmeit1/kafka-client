@@ -3,7 +3,7 @@ package parsers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ducmeit1/kafka-client/cmd/producer/app/pkg"
+	"github.com/ducmeit1/kafka-client/cmd/app/pkg"
 	"net/http"
 )
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/ducmeit1/kafka-client/common/utils/io"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -15,6 +16,9 @@ func NewKafkaConfig(config *Config) *sarama.Config {
 	if config.TLSConfig != nil {
 		c.Net.TLS.Enable = true
 		c.Net.TLS.Config = config.TLSConfig
+		for k := range config.TLSConfig.NameToCertificate {
+			log.Infof("Connecting to Kafka with SSL Client Name: %v", k)
+		}
 	}
 	c.Producer.Partitioner = sarama.NewRandomPartitioner
 	return c
@@ -48,7 +52,7 @@ func GetDefaultConfig() (*Config, error) {
 		tlsClientCA := viper.GetString("kafka.tls_client_ca")
 		tlsSkipVerify := viper.GetBool("kafka.tls_skip_verify")
 
-		if tlsClientCert != "" {
+		if tlsClientCA != "" {
 			tlsClientCA, err = GetClientFilePathByViper("kafka.tls_client_ca")
 			if err != nil {
 				return nil, err

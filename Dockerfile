@@ -1,8 +1,6 @@
 FROM golang:1.12.13 as build
 WORKDIR /app
 
-ARG BIN
-
 # Set environment for build
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
@@ -15,7 +13,7 @@ COPY . .
 RUN go mod download
 
 # Build to binrary
-RUN go build -a -ldflags "-s -w" -v -o main ${BIN}/main.go
+RUN go build -a -ldflags "-s -w" -v -o main .
 
 # Optimize docker image after build
 FROM alpine:3.10

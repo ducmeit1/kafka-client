@@ -29,3 +29,7 @@ gen
 ### MacOS
 *~
 .DS_Store
+
+### Project
+certs/
+kubernetes/vinid-*

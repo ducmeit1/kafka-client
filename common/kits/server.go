@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/ducmeit1/kafka-client/common/middlewares"
 	"github.com/ducmeit1/kafka-client/common/transports"
-	"github.com/prometheus/common/log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,7 +16,7 @@ import (
 
 var (
 	HTTPPort   = flag.Int("http-port", 8888, "http port")
-	ConfigPath = flag.String("config-path", "conf.toml", "config path")
+	ConfigPath = flag.String("config-path", "config.toml", "config path")
 	ConfigType = flag.String("config-type", "toml", "config type")
 )
 
@@ -37,6 +37,7 @@ func init() {
 
 func Init() error {
 	flag.Parse()
+	InitLogger()
 	err := LoadConfig()
 	if err != nil {
 		return err

@@ -1,12 +1,12 @@
-package app
+package cmd
 
 import (
 	"github.com/Shopify/sarama"
-	"github.com/ducmeit1/kafka-client/cmd/producer/app/handlers"
+	"github.com/ducmeit1/kafka-client/cmd/app/handlers"
 	kafka_driver "github.com/ducmeit1/kafka-client/common/drivers/kafka"
 	"github.com/ducmeit1/kafka-client/common/kits"
 	"github.com/ducmeit1/kafka-client/common/transports"
-	"github.com/prometheus/common/log"
+	log "github.com/sirupsen/logrus"
 )
 
 var producer sarama.SyncProducer
@@ -45,6 +45,7 @@ func InitRoutes(prefix string) transports.Transport {
 				Handler: &handlers.SyncProducerHandler{
 					Producer: producer,
 				},
+				Method: "POST",
 			},
 		},
 	}
