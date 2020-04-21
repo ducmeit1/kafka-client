@@ -1,5 +1,7 @@
 # KAFKA CLIENT
 
+![Docker](https://github.com/ducmeit1/kafka-client/workflows/Docker/badge.svg?branch=master)
+
 ## Introduction
 
 A simple client helps to produce message to any topic kafka in a random partition number.
