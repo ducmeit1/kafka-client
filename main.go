@@ -17,6 +17,6 @@ func main() {
 
 	err = s.Run()
 	if err != nil {
-		log.Error("Run server has failed: %v", err)
+		log.Errorf("Run server has failed: %v", err)
 	}
 }
