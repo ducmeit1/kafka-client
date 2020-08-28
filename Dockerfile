@@ -19,7 +19,7 @@ RUN go build -a -ldflags "-s -w" -v -o main .
 # Optimize docker image after build
 FROM alpine:3.12
 
-RUN apk-add bash
+RUN apk add bash curl ca-certificates
 
 # Add non root user for security context
 RUN addgroup -S app && adduser -S -g app app 
