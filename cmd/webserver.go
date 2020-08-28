@@ -47,6 +47,13 @@ func InitRoutes(prefix string) transports.Transport {
 				},
 				Method: "POST",
 			},
+			{
+				Path: "/upstream-kong-log",
+				Handler: &handlers.UpStreamProducerHandler{
+					Producer: producer,
+				},
+				Method: "POST",
+			},
 		},
 	}
 }
