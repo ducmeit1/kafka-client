@@ -12,6 +12,10 @@ on:
 
   # Run tests for any PRs.
   pull_request:
+    branches:
+      - feature*
+      - bug*
+      - hotfix*
 
 env:
   IMAGE_NAME: ducmeit1/kafka-client:latest
