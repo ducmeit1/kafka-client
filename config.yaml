@@ -1,0 +1,7 @@
+kafka:
+  servers: "localhost:9093"
+  tls: "false"
+  tls_client_cert: "certs/client_cert.crt"
+  tls_client_key: "certs/client_key.key"
+  tls_client_ca: ""
+  tls_skip_verify: "true"

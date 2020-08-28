@@ -6,14 +6,14 @@ metadata:
   labels:
     app: kafka-client
 data:
-  config.toml: |
-    [kafka]
-    servers=["localhost:9093"]
-    tls=false
-    tls_client_cert="/usr/certs/client_cert.crt"
-    tls_client_key="/usr/certs/client_key.key"
-    tls_client_ca=""
-    tls_skip_verify=true
+  config.yaml: |
+    kafka:
+      servers: "localhost:9093"
+      tls: "false"
+      tls_client_cert: "certs/client_cert.crt"
+      tls_client_key: "certs/client_key.key"
+      tls_client_ca: ""
+      tls_skip_verify: "true"
 ---
 apiVersion: v1
 kind: Secret
@@ -24,7 +24,7 @@ metadata:
     app: kafka-client
 data:
   client_cert.crt: ""
-  client_key.key: "="
+  client_key.key: ""
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -65,6 +65,7 @@ spec:
       - image:  ducmeit1/kafka-client:latest
         imagePullPolicy: Always
         name:  kafka-client
+        command: ["/bin/sh", "-c", "./run.sh"]
         securityContext:
           capabilities:
             drop:
@@ -95,8 +96,8 @@ spec:
           name: http
         volumeMounts:
           - name:  kafka-client-config
-            mountPath: /app/config.toml
-            subPath: config.toml
+            mountPath: /app/config.yaml
+            subPath: config.yaml
             readOnly: true
           - name: kafka-client-secret
             mountPath: /usr/certs/client_cert.crt
