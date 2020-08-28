@@ -1,0 +1,65 @@
+version: "3"
+
+volumes:
+  zookeeper-data:
+    driver: local
+  zookeeper-log:
+    driver: local
+  kafka-data:
+    driver: local
+
+networks:
+  kafka-client:
+    driver: bridge
+
+services:
+  # Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-log:/var/lib/zookeeper/log
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - kafka-client
+
+  kafka:
+    image: confluentinc/cp-kafka
+    volumes:
+      - kafka-data:/var/lib/kafka
+    ports:
+      - 9092:9092
+      - 9093:9093
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_NUM_PARTITIONS: 12
+      KAFKA_COMPRESSION_TYPE: gzip
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: 'false'
+      KAFKA_JMX_PORT: 9091
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    links:
+      - zookeeper
+    networks:
+      - kafka-client
+
+  # Kafka UI Management
+  akhq:
+    image: tchiotludo/akhq
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "kafka:9092"
+    ports:
+      - 8080:8080
+    links:
+      - kafka
+    networks:
+      - kafka-client

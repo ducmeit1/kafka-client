@@ -16,7 +16,7 @@ type ProducerHandler struct {
 	Producer sarama.SyncProducer
 }
 
-func (p *ProducerHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *ProducerHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var (
 		vars  = mux.Vars(r)
 		topic = vars["topic"]
@@ -43,7 +43,7 @@ func (p *ProducerHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Value: sarama.StringEncoder(pr),
 	}
 
-	partition, offset, err := p.Producer.SendMessage(m)
+	partition, offset, err := h.Producer.SendMessage(m)
 	if err != nil {
 		transport.BadRequest(w, map[string]interface{}{
 			"Error": err.Error(),
