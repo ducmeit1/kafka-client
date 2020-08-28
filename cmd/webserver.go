@@ -52,7 +52,7 @@ func InitRoutes(prefix string) transports.Transport {
 				Handler: &handlers.UpStreamProducerHandler{
 					Producer: producer,
 				},
-				Method: "POST",
+				Method: "POST", 
 			},
 		},
 	}
