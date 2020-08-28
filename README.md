@@ -4,14 +4,28 @@
 
 ## Introduction
 
-A simple client helps to produce message to any topic kafka in a random partition number.
+A simple client helps to produce message to any topic kafka in a random partition.
+
+## Docker
+```bash
+docker pull ducmeit1/kafka-client:latest 
+```
 
 ## API Usages
 ```
-POST: /v1/producer
+POST: /v1/produce/{topic}
 {
-  "topic": "topic_name",
-  "message": "message"
+    Raw JSON
+}
+```
+
+Example:
+
+```
+POST: /v1/produce/my-topic
+{
+    "id": 1,
+    "message: "hello world"
 }
 ```
 
@@ -33,11 +47,6 @@ openssl x509 -in client.pem -out client_cert.crt
 
 # EXPORT PRIVATE KEY
 openssl rsa -in client.pem -out client_key.key
-```
-
-## Docker
-```bash
-docker pull ducmeit1/kafka-client:latest 
 ```
 
 ## Kubernetes

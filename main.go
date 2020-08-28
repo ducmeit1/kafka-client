@@ -2,21 +2,16 @@ package main
 
 import (
 	"github.com/ducmeit1/kafka-client/cmd"
-	"github.com/ducmeit1/kafka-client/common"
-	log "github.com/sirupsen/logrus"
+	"github.com/ducmeit1/kafka-client/cmd/app"
 )
 
 func main() {
-	kafkaProducer := common.KafkaProducer
-
-	s, err := cmd.NewServer(kafkaProducer.Name, kafkaProducer.PathPrefix)
+	api := cmd.KafkaClient
+	//Setup new server
+	s, err := app.NewServer(api.Name, api.PathPrefix)
 	if err != nil {
-		log.Errorf("Unable to new http server: %v", err)
-		return
+		panic(err)
 	}
-
-	err = s.Run()
-	if err != nil {
-		log.Errorf("Run server has failed: %v", err)
-	}
+	//Run server
+	s.Run()
 }
