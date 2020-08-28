@@ -25,6 +25,7 @@ RUN addgroup -S app && adduser -S -g app app
 WORKDIR /app
 
 COPY --from=build /app/main .
+COPY --from=build /app/run.sh .
 
 RUN chown -R app /app
 
